@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Professional Invoice Receipt Suite — live query playground</title>
+<link rel="canonical" href="https://amos-mig.github.io/professional-invoice-receipt-suite-demo/">
+<style>
+*{box-sizing:border-box;margin:0}
+:root{--bg:#0b0d12;--pn:#14171f;--bd:#262b36;--tx:#e8eaf0;--mu:#9aa3b2;--ac:#10b981}
+body{background:var(--bg);color:var(--tx);font:16px/1.55 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+code,pre,.m{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.banner{background:var(--ac);color:#04231a;text-align:center;padding:9px 16px;font-size:14px;font-weight:600}
+main{max-width:1060px;margin:0 auto;padding:0 20px}
+header{padding:46px 0 28px}
+h1{font-size:clamp(26px,4.6vw,40px);letter-spacing:-.6px;line-height:1.15}
+.hl{color:var(--ac)}
+.sub{color:var(--mu);max-width:680px;margin-top:12px;font-size:17px}
+h2{font-size:20px;margin:0 0 14px;letter-spacing:-.2px}
+section{margin:36px 0}
+.panel{background:var(--pn);border:1px solid var(--bd);border-radius:10px}
+.ph{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin-bottom:14px}
+.sim{font-size:11px;font-weight:700;letter-spacing:.6px;color:var(--ac);border:1px solid var(--ac);border-radius:20px;padding:2px 9px}
+.pgrid{display:grid;grid-template-columns:1fr 1.25fr;gap:14px}
+@media(max-width:860px){.pgrid{grid-template-columns:1fr}}
+.urlbar{display:flex;align-items:center;gap:10px;padding:11px 13px;margin-bottom:12px;overflow-x:auto;white-space:nowrap}
+.urlbar .m{color:var(--ac);font-weight:700;font-size:13px}
+.urlbar code{font-size:13px;color:var(--mu)}
+.ctrls{padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ctrls label{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--mu);display:block;margin-bottom:5px}
+select,input{width:100%;background:var(--bg);border:1px solid var(--bd);color:var(--tx);border-radius:7px;padding:9px 10px;font:inherit;font-size:14px}
+select:focus,input:focus{outline:1px solid var(--ac)}
+#send{grid-column:1/-1;background:var(--ac);color:#04231a;border:0;border-radius:8px;padding:11px;font:inherit;font-weight:700;font-size:15px;cursor:pointer}
+#send:hover{filter:brightness(1.08)}
+#send[disabled]{opacity:.6;cursor:wait}
+.curl{margin-top:12px;padding:11px 13px;font-size:12.5px;color:var(--mu);overflow-x:auto;white-space:nowrap}
+.curl b{color:var(--ac)}
+.resp{display:flex;flex-direction:column;overflow:hidden}
+.rbar{display:flex;gap:10px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--bd)}
+.pill{font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;font-family:ui-monospace,Menlo,monospace}
+.pill.ok{color:var(--ac);background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.5)}
+.pill.err{color:#f87171;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.5)}
+.lat{color:var(--mu);font-size:12px}
+.hdrs{padding:10px 14px;font-size:11.5px;color:#707a8a;border-bottom:1px solid var(--bd);white-space:pre;overflow-x:auto}
+.jbody{padding:14px;font-size:12.5px;color:#8b94a6;white-space:pre;overflow:auto;flex:1;min-height:300px;max-height:440px}
+.k{color:#aeb9cb}.s{color:var(--ac)}.n{color:#e8eaf0}.e{color:var(--mu);font-style:italic}
+.note{color:var(--mu);font-size:13px;margin-top:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.card{background:var(--pn);border:1px solid var(--bd);border-radius:10px;padding:18px}
+.card h3{font-size:15.5px;margin-bottom:8px}
+.card p{color:var(--mu);font-size:14px}
+.card.locked{border-style:dashed;background:transparent}
+.tag{display:inline-block;margin-top:12px;font-size:11px;font-weight:700;letter-spacing:.6px;color:var(--mu);border:1px solid var(--bd);border-radius:20px;padding:2px 9px}
+.code{padding:16px 18px;font-size:13px;line-height:1.65;overflow-x:auto;color:#aeb9cb}
+.c{color:#5f6a7c}
+.cta{display:inline-block;margin-top:18px;background:var(--ac);color:#04231a;font-weight:700;font-size:16px;padding:13px 24px;border-radius:10px;text-decoration:none}
+.cta:hover{filter:brightness(1.08)}
+.fine{color:var(--mu);font-size:13px;margin-top:10px}
+footer{border-top:1px solid var(--bd);margin-top:48px;padding:22px 20px;text-align:center;color:var(--mu);font-size:13.5px}
+footer a{color:var(--ac);text-decoration:none}
+footer a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="banner">Live demo — this playground queries a 3-row sample of the dataset. The full product does more ↓</div>
+<main>
+<header>
+<h1 id="h1">Professional Invoice Receipt Suite</h1>
+<p class="sub">A curated CSV dataset of professional invoice &amp; receipt records — hours of manual research, already done. Clean, consistent columns you can filter, sort, and import anywhere: Excel, Google Sheets, Notion, pandas, anything that reads CSV.</p>
+</header>
+
+<section>
+<div class="ph"><h2>Query playground</h2><span class="sim">SIMULATED · CLIENT-SIDE</span></div>
+<div class="pgrid">
+<div>
+<div class="urlbar panel"><span class="m">GET</span><code id="url"></code></div>
+<div class="ctrls panel">
+<div><label>Status</label><select id="f_status"><option value="any">any</option><option>paid</option><option>pending</option><option>overdue</option></select></div>
+<div><label>Currency</label><select id="f_cur"><option value="any">any</option><option>USD</option><option>EUR</option><option>GBP</option></select></div>
+<div><label>Sort by</label><select id="f_sort"><option value="newest">issued · newest</option><option value="oldest">issued · oldest</option><option value="amount_desc" selected>amount · high → low</option><option value="amount_asc">amount · low → high</option></select></div>
+<div><label>Limit</label><input id="f_limit" value="5" inputmode="numeric"></div>
+<button id="send">Send request ▸</button>
+</div>
+<div class="curl panel"><b>curl</b> <code id="curl"></code></div>
+</div>
+<div class="resp panel">
+<div class="rbar"><span id="st" class="pill ok">200 OK</span><span id="lat" class="lat m"></span></div>
+<pre class="hdrs m" id="hdrs"></pre>
+<pre class="jbody m" id="jbody"></pre>
+</div>
+</div>
+<p class="note">Simulated response — everything above runs in your browser. The paid product is the full CSV dataset itself; this playground just mirrors how cleanly its records query, filter, and sort.</p>
+</section>
+
+<section>
+<h2>What's inside</h2>
+<div class="grid">
+<div class="card"><h3>✅ Research done for you</h3><p>Vendor, category, amounts, dates and status — collected, normalized and de-duplicated, so you skip hours of manual spreadsheet work.</p></div>
+<div class="card"><h3>✅ Decision-ready fields</h3><p>invoice_id, vendor, category, amount, currency, status, issued/due dates and aging — practical fields chosen for real filtering and reporting.</p></div>
+<div class="card"><h3>✅ Imports anywhere</h3><p>One clean UTF-8 CSV: open it in Excel or Google Sheets, paste into Notion or Airtable, or pipe it straight into pandas and your own tooling.</p></div>
+<div class="card locked"><h3>🔒 Full 340-record export</h3><p>The playground above caps at 3 rows. The paid CSV unlocks every record with all 12 columns, unfiltered and unwatermarked.</p><span class="tag">in the full kit</span></div>
+<div class="card locked"><h3>🔒 Import recipes + vendor contacts</h3><p>Step-by-step Google Sheets / Notion / Airtable import guides, plus a ready-made vendor contact sheet for follow-ups.</p><span class="tag">in the full kit</span></div>
+</div>
+</section>
+
+<section>
+<h2>Drop it straight into your tooling</h2>
+<pre class="code panel"><code><span class="k">import</span> pandas <span class="k">as</span> pd
+
+df = pd.read_csv(<span class="s">"professional_invoice_receipt_suite.csv"</span>)  <span class="c"># 340 rows × 12 cols</span>
+
+chase = (df[df.status == <span class="s">"overdue"</span>]
+           .sort_values(<span class="s">"amount"</span>, ascending=<span class="k">False</span>))
+
+print(chase[[<span class="s">"invoice_id"</span>, <span class="s">"vendor"</span>, <span class="s">"amount"</span>, <span class="s">"contact"</span>]]
+      .to_string(index=<span class="k">False</span>))  <span class="c"># who to chase first, ranked — full kit ships import recipes too</span></code></pre>
+<a class="cta" href="https://amosmign.gumroad.com/l/professional-invoice-receipt-suite">Get the full Invoice Receipt Suite · 7</a>
+<p class="fine">Instant download · one clean UTF-8 CSV · works in Excel, Google Sheets, Notion &amp; any CSV tool</p>
+</section>
+</main>
+
+<footer>Professional Invoice Receipt Suite · <a href="https://kits.amosmignery.dev">kits.amosmignery.dev</a> · <a href="https://github.com/Amos-Mig/professional-invoice-receipt-suite-demo">GitHub</a> · <a href="https://amosmign.gumroad.com/l/professional-invoice-receipt-suite">Get the suite</a><span class='disclaimer' style='display:block;color:#8b93a7;font-size:11px;margin-top:6px'>Demo runs on public data only &middot; no personal data collected &middot; not affiliated with the platforms shown</span></footer>
+
+<script>
+const DS=[
+["INV-2041","Northwind Paper Co.","Office Supplies",1240.5,"USD","paid","2025-04-02","2025-05-02","billing@northwindpaper.com"],
+["INV-2042","Helios Cloud Systems","SaaS & Infrastructure",890,"EUR","overdue","2025-03-18","2025-04-17","ap@helioscloud.io"],
+["INV-2043","Meridian Legal LLP","Professional Services",3400,"GBP","pending","2025-04-25","2025-05-25","accounts@meridianlegal.co.uk"],
+["INV-2044","Cobalt Freight Ltd","Logistics",2160.75,"USD","overdue","2025-02-28","2025-03-30","ap@cobaltfreight.com"],
+["INV-2045","Vertex Print Studio","Marketing",610.2,"EUR","paid","2025-04-10","2025-05-10","hello@vertexprint.eu"],
+["INV-2046","Kestrel IT Support","IT Services",1450,"USD","pending","2025-05-01","2025-05-31","support@kestrelit.com"],
+["INV-2047","Lumen Facilities Group","Facilities",780.4,"GBP","paid","2025-03-05","2025-04-04","office@lumenfacilities.co.uk"],
+["INV-2048","Aurora Design Co.","Marketing",1990,"EUR","overdue","2025-03-22","2025-04-21","studio@auroradesign.de"],
+["INV-2049","Basalt Hosting","SaaS & Infrastructure",129.99,"USD","paid","2025-04-18","2025-05-18","billing@basalthosting.com"],
+["INV-2050","Pinewood Catering","Events",540,"GBP","pending","2025-05-04","2025-06-03","events@pinewoodcatering.co.uk"],
+["INV-2051","Signal Analytics","Data & Research",2750,"USD","overdue","2025-01-30","2025-03-01","ap@signalanalytics.io"],
+["INV-2052","Terrafix Maintenance","Facilities",935.6,"EUR","paid","2025-04-27","2025-05-27","service@terrafix.eu"]];
+const $=id=>document.getElementById(id),CAP=3,TOTAL=340;
+const toRow=a=>({invoice_id:a[0],vendor:a[1],category:a[2],amount:a[3],currency:a[4],status:a[5],issued:a[6],due:a[7],days_overdue:a[5]==="overdue"?Math.max(0,Math.floor((Date.now()-new Date(a[7]).getTime())/864e5)):0,contact:a[8]});
+const CMP={newest:(a,b)=>b.issued.localeCompare(a.issued),oldest:(a,b)=>a.issued.localeCompare(b.issued),amount_desc:(a,b)=>b.amount-a.amount,amount_asc:(a,b)=>a.amount-b.amount};
+function qs(){return "status="+$("f_status").value+"&currency="+$("f_cur").value+"&limit="+$("f_limit").value.trim()+"&sort="+$("f_sort").value}
+function sync(){const u="https://api.demo.amosmignery.dev/v1/invoices?"+qs();$("url").textContent=u;$("curl").textContent='curl -s "'+u+'"'}
+["f_status","f_cur","f_sort","f_limit"].forEach(i=>{$(i).addEventListener("input",sync);$(i).addEventListener("change",sync)});
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+function hl(o){return esc(JSON.stringify(o,null,2)).replace(/("(?:\\.|[^"\\])*")(\s*:)?|\b(?:true|false|null)\b|-?\b\d+(?:\.\d+)?\b/g,function(m,str,col){
+ if(str)return col?'<span class="k">'+str+'</span>'+col:'<span class="s">'+str+'</span>';
+ if(/^(?:true|false|null)$/.test(m))return '<span class="e">'+m+'</span>';
+ return '<span class="n">'+m+'</span>';})}
+function respond(code,body,ms){
+ const ok=code===200;
+ $("st").textContent=code+" "+(ok?"OK":"Bad Request");
+ $("st").className="pill "+(ok?"ok":"err");
+ $("lat").textContent="· simulated network · "+ms+" ms";
+ let h="HTTP/1.1 "+code+" "+(ok?"OK":"Bad Request")+"\ncontent-type: application/json; charset=utf-8\nx-dataset: professional-invoice-receipt-suite\nx-total-records: "+TOTAL;
+ if(ok){h+="\nx-records-returned: "+body.meta.returned+"\nx-playground-cap: "+CAP;if(body.meta.total_matching>body.meta.returned)h+="\nx-truncated: true"}
+ $("hdrs").textContent=h;
+ $("jbody").innerHTML=hl(body);
+}
+function run(){
+ sync();
+ const lim=$("f_limit").value.trim(),send=$("send");
+ send.disabled=true;send.textContent="Sending…";
+ const ms=60+Math.floor(Math.random()*110);
+ setTimeout(()=>{
+  send.disabled=false;send.textContent="Send request ▸";
+  if(!/^\d+$/.test(lim)||+lim<1)return respond(400,{error:"invalid_limit",message:"`limit` must be an integer >= 1"},ms);
+  if(+lim>50)return respond(400,{error:"limit_too_large",message:"`limit` must be <= 50"},ms);
+  const st=$("f_status").value,cu=$("f_cur").value;
+  let rows=DS.map(toRow).filter(r=>(st==="any"||r.status===st)&&(cu==="any"||r.currency===cu));
+  const total=rows.length;
+  rows.sort(CMP[$("f_sort").value]);
+  const ret=rows.slice(0,Math.min(+lim,CAP));
+  const body={data:ret,meta:{total_matching:total,returned:ret.length,dataset_total:TOTAL,playground_cap:CAP}};
+  if(total>ret.length)body.meta.note="Playground sample is capped at "+CAP+" rows — the full CSV export contains all "+TOTAL+" records.";
+  respond(200,body,ms);
+ },ms);
+}
+$("send").addEventListener("click",run);
+$("f_limit").addEventListener("keydown",e=>{if(e.key==="Enter")run()});
+const h=document.getElementById("h1");h.innerHTML=h.textContent.replace("Invoice Receipt",'<span class="hl">Invoice Receipt</span>');
+sync();run();
+</script>
+</body>
+</html>
